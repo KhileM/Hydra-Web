@@ -1,8 +1,9 @@
 // src/services/weatherService.js
 
 // Open-Meteo is free, no API key required
-// Docs: https://open-meteo.com/en/docs
-const BASE_URL = 'https://api.open-meteo.com/v1/forecast'
+// Docs: https://open-meteo.com/en/docs/historical-weather-api
+// Archive endpoint handles historical date ranges reliably
+const BASE_URL = 'https://archive-api.open-meteo.com/v1/archive'
 
 // Coordinates for the HYDRA site (Western Cape, South Africa)
 const SITE_COORDINATES = {
@@ -13,14 +14,19 @@ const SITE_COORDINATES = {
 // ─── Fetch Weather Data ───────────────────────────────────────────────────────
 
 export async function fetchWeatherData(dateRange) {
+  // Cap end_date to yesterday since archive API doesn't have today's data yet
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  const maxDate = yesterday.toISOString().split('T')[0]
+  const endDate = dateRange.to > maxDate ? maxDate : dateRange.to
+
   const params = new URLSearchParams({
     latitude:        SITE_COORDINATES.latitude,
     longitude:       SITE_COORDINATES.longitude,
     daily:           'temperature_2m_max,temperature_2m_min,precipitation_sum',
     timezone:        'Africa/Johannesburg',
     start_date:      dateRange.from,
-    end_date:        dateRange.to,
-    forecast_days:   1,
+    end_date:        endDate,
   })
 
   const res = await fetch(`${BASE_URL}?${params}`)
