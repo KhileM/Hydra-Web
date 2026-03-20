@@ -287,6 +287,3 @@ insight generation logic.
   but does not model seasonality or weekly patterns
 - Weather coordinates are hardcoded to the Western Cape. A production version
   would derive coordinates from site metadata returned by the HYDRA API
-- `VITE_` prefixed credentials are embedded in the client bundle at build time.
-  A production system should move all credential handling exclusively to the
-  serverless layer
