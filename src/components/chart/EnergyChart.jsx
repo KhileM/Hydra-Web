@@ -13,6 +13,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { useEnergy }   from '../../context/EnergyContext'
+import { CHART_COLORS } from '../../utils/constants'
 import ChartTooltip    from './ChartTooltip'
 import ChartLegend     from './ChartLegend'
 
@@ -30,9 +31,9 @@ function AnomalyDot(props) {
     : 4
 
   const color = payload.anomalySeverity === 'high'
-    ? '#dc2626'
+    ? CHART_COLORS.anomaly
     : payload.anomalySeverity === 'medium'
-    ? '#f97316'
+    ? CHART_COLORS.temperature
     : '#fbbf24'
 
   return (
@@ -191,7 +192,7 @@ export default function EnergyChart() {
             orientation="right"
             domain={yDomainTemp}
             tickFormatter={v => `${v}°`}
-            tick={{ fill: '#f97316', fontSize: 11 }}
+            tick={{ fill: CHART_COLORS.temperature, fontSize: 11 }}
             tickLine={false}
             axisLine={false}
             width={36}
@@ -204,7 +205,7 @@ export default function EnergyChart() {
             <ReferenceLine
               x={forecastStartDate}
               yAxisId="kwh"
-              stroke="#8b5cf6"
+              stroke={CHART_COLORS.forecast}
               strokeDasharray="4 4"
               strokeWidth={1.5}
               label={<ForecastLabel />}
@@ -216,7 +217,7 @@ export default function EnergyChart() {
             <ReferenceLine
               y={summary.avgDailyKwh}
               yAxisId="kwh"
-              stroke="#1d4ed8"
+              stroke={CHART_COLORS.energy}
               strokeDasharray="2 4"
               strokeWidth={1}
               strokeOpacity={0.4}
@@ -227,11 +228,10 @@ export default function EnergyChart() {
           <Bar
             yAxisId="kwh"
             dataKey="kwh"
-            fill="#1d4ed8"
+            fill={CHART_COLORS.energy}
             opacity={0.85}
             radius={[3, 3, 0, 0]}
             maxBarSize={24}
-            // Dim bars on anomaly days so dots stand out
             label={false}
           />
 
@@ -239,9 +239,9 @@ export default function EnergyChart() {
           <Area
             yAxisId="kwh"
             dataKey="forecastKwh"
-            fill="#8b5cf6"
+            fill={CHART_COLORS.forecast}
             fillOpacity={0.15}
-            stroke="#8b5cf6"
+            stroke={CHART_COLORS.forecast}
             strokeWidth={2}
             strokeDasharray="5 4"
             dot={false}
@@ -252,10 +252,10 @@ export default function EnergyChart() {
           <Line
             yAxisId="kwh"
             dataKey="movingAvg"
-            stroke="#0891b2"
+            stroke={CHART_COLORS.movingAvg}
             strokeWidth={2}
             dot={false}
-            activeDot={{ r: 4, fill: '#0891b2' }}
+            activeDot={{ r: 4, fill: CHART_COLORS.movingAvg }}
             connectNulls
           />
 
@@ -263,10 +263,10 @@ export default function EnergyChart() {
           <Line
             yAxisId="temp"
             dataKey="tempAvg"
-            stroke="#f97316"
+            stroke={CHART_COLORS.temperature}
             strokeWidth={1.5}
             dot={false}
-            activeDot={{ r: 3, fill: '#f97316' }}
+            activeDot={{ r: 3, fill: CHART_COLORS.temperature }}
             strokeDasharray="4 2"
             connectNulls
           />

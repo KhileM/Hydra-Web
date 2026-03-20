@@ -1,4 +1,6 @@
 // api/energy.js
+import { buildAuthBody, AUTH_ENDPOINT } from './_shared/auth.js'
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -6,19 +8,10 @@ export default async function handler(req, res) {
 
   try {
     // Get a token first (server-to-server, no CORS issue)
-    const authBody = new URLSearchParams({
-      client_id:     process.env.HYDRA_CLIENT_ID,
-      client_secret: process.env.HYDRA_CLIENT_SECRET,
-      grant_type:    'password',
-      scope:         'api1',
-      username:      process.env.HYDRA_USERNAME,
-      password:      process.env.HYDRA_PASSWORD,
-    })
-
-    const authRes  = await fetch('https://identity.hydra.africa/connect/token', {
+    const authRes  = await fetch(AUTH_ENDPOINT, {
       method:  'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body:    authBody,
+      body:    buildAuthBody(),
     })
     const authData = await authRes.json()
 
