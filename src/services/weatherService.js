@@ -13,7 +13,7 @@ const SITE_COORDINATES = {
 
 // ─── Fetch Weather Data ───────────────────────────────────────────────────────
 
-export async function fetchWeatherData(dateRange) {
+export async function fetchWeatherData(dateRange, { signal } = {}) {
   // Cap end_date to yesterday since archive API doesn't have today's data yet
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
@@ -29,7 +29,7 @@ export async function fetchWeatherData(dateRange) {
     end_date:        endDate,
   })
 
-  const res = await fetch(`${BASE_URL}?${params}`)
+  const res = await fetch(`${BASE_URL}?${params}`, { signal })
 
   if (!res.ok) {
     throw new Error(`Weather fetch failed: ${res.status} ${res.statusText}`)

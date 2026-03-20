@@ -1,5 +1,7 @@
 // src/components/summary/SummaryCard.jsx
 import { useEnergy } from '../../context/EnergyContext'
+import { formatShortDate } from '../../utils/formatters'
+import { SEVERITY_COLORS } from '../../utils/constants'
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
@@ -28,17 +30,17 @@ function AnomalyBreakdown({ data }) {
   return (
     <div style={styles.breakdown}>
       {high > 0 && (
-        <span style={{ ...styles.pill, background: '#fee2e2', color: '#991b1b' }}>
+        <span style={{ ...styles.pill, background: SEVERITY_COLORS.high.bg, color: SEVERITY_COLORS.high.text }}>
           {high} high
         </span>
       )}
       {medium > 0 && (
-        <span style={{ ...styles.pill, background: '#ffedd5', color: '#9a3412' }}>
+        <span style={{ ...styles.pill, background: SEVERITY_COLORS.medium.bg, color: SEVERITY_COLORS.medium.text }}>
           {medium} medium
         </span>
       )}
       {low > 0 && (
-        <span style={{ ...styles.pill, background: '#fef9c3', color: '#854d0e' }}>
+        <span style={{ ...styles.pill, background: SEVERITY_COLORS.low.bg, color: SEVERITY_COLORS.low.text }}>
           {low} low
         </span>
       )}
@@ -51,12 +53,7 @@ function AnomalyBreakdown({ data }) {
 function PeakDayCard({ peakDay }) {
   if (!peakDay) return null
 
-  const date = new Date(peakDay.date)
-  const formatted = date.toLocaleDateString('en-ZA', {
-    day:   'numeric',
-    month: 'short',
-    year:  'numeric',
-  })
+  const formatted = formatShortDate(peakDay.date)
 
   return (
     <div style={{ ...styles.card, borderTop: '3px solid #8b5cf6' }}>
@@ -88,12 +85,8 @@ export default function SummaryCard() {
   if (!processedData.length) return null
 
   // Date range display
-  const fromFormatted = new Date(dateRange.from).toLocaleDateString('en-ZA', {
-    day: 'numeric', month: 'short', year: 'numeric',
-  })
-  const toFormatted = new Date(dateRange.to).toLocaleDateString('en-ZA', {
-    day: 'numeric', month: 'short', year: 'numeric',
-  })
+  const fromFormatted = formatShortDate(dateRange.from)
+  const toFormatted = formatShortDate(dateRange.to)
 
   // Trend vs previous period (compare first half to second half of dataset)
   const mid        = Math.floor(processedData.length / 2)

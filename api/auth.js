@@ -1,4 +1,6 @@
 // api/auth.js
+import { buildAuthBody, AUTH_ENDPOINT } from './_shared/auth.js'
+
 export default async function handler(req, res) {
   // Only allow POST
   if (req.method !== 'POST') {
@@ -6,19 +8,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = new URLSearchParams({
-      client_id:     process.env.HYDRA_CLIENT_ID,
-      client_secret: process.env.HYDRA_CLIENT_SECRET,
-      grant_type:    'password',
-      scope:         'api1',
-      username:      process.env.HYDRA_USERNAME,
-      password:      process.env.HYDRA_PASSWORD,
-    })
-
-    const response = await fetch('https://identity.hydra.africa/connect/token', {
+    const response = await fetch(AUTH_ENDPOINT, {
       method:  'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body,
+      body:    buildAuthBody(),
     })
 
     const data = await response.json()

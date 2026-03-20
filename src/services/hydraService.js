@@ -53,7 +53,7 @@ async function getToken() {
 
 // ─── Fetch Energy Data ────────────────────────────────────────────────────────
 
-export async function fetchEnergyData(site, dateRange) {
+export async function fetchEnergyData(site, dateRange, { signal } = {}) {
   if (isProd) {
     // Prod: single call to serverless function which handles auth internally
     const res = await fetch(DATA_URL, {
@@ -65,6 +65,7 @@ export async function fetchEnergyData(site, dateRange) {
         to:       dateRange.to,
         sensors:  [site.sensorId],
       }),
+      signal,
     })
     if (!res.ok) throw new Error(`Energy fetch failed: ${res.status}`)
     return transformEnergyData(await res.json())
@@ -85,6 +86,7 @@ export async function fetchEnergyData(site, dateRange) {
       to:       dateRange.to,
       sensors:  [site.sensorId],
     }),
+    signal,
   })
 
   if (!res.ok) {

@@ -1,4 +1,5 @@
 // src/components/chart/ChartTooltip.jsx
+import { CHART_COLORS } from '../../utils/constants'
 
 export default function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -12,7 +13,7 @@ export default function ChartTooltip({ active, payload, label }) {
 
       {data.isForecast ? (
         <Row
-          color="#8b5cf6"
+          color={CHART_COLORS.forecast}
           label="Forecast"
           value={`${data.forecastKwh?.toLocaleString()} kWh`}
         />
@@ -20,28 +21,28 @@ export default function ChartTooltip({ active, payload, label }) {
         <>
           {data.kwh != null && (
             <Row
-              color={data.isAnomaly ? '#dc2626' : '#1d4ed8'}
+              color={data.isAnomaly ? CHART_COLORS.anomaly : CHART_COLORS.energy}
               label={data.isAnomaly ? `Usage ⚠ ${data.anomalySeverity}` : 'Usage'}
               value={`${data.kwh?.toLocaleString()} kWh`}
             />
           )}
           {data.movingAvg != null && (
             <Row
-              color="#0891b2"
+              color={CHART_COLORS.movingAvg}
               label="7-day avg"
               value={`${data.movingAvg?.toLocaleString()} kWh`}
             />
           )}
           {data.tempAvg != null && (
             <Row
-              color="#f97316"
+              color={CHART_COLORS.temperature}
               label="Avg temp"
               value={`${data.tempAvg}°C`}
             />
           )}
           {data.precipitation != null && (
             <Row
-              color="#6366f1"
+              color={CHART_COLORS.precipitation}
               label="Precipitation"
               value={`${data.precipitation} mm`}
             />

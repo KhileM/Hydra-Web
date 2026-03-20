@@ -1,5 +1,5 @@
 // src/hooks/useEnergyData.js
-import { useEffect } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { useEnergy, ACTIONS } from '../context/EnergyContext'
 import { fetchEnergyData } from '../services/hydraService'
 import { fetchWeatherData } from '../services/weatherService'
@@ -8,31 +8,33 @@ import { processEnergyData } from '../utils/analyticsUtils'
 export function useEnergyData() {
   const { state, dispatch } = useEnergy()
   const { selectedSite, dateRange } = state
+  const abortRef = useRef(null)
 
-  useEffect(() => {
-    load()
-  }, [selectedSite.id, dateRange.from, dateRange.to])
+  const load = useCallback(async () => {
+    // Cancel any in-flight request
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
 
-  async function load() {
     dispatch({ type: ACTIONS.FETCH_START })
 
     try {
-      // Fetch both in parallel
       const [energyRaw, weatherRaw] = await Promise.all([
-        fetchEnergyData(selectedSite, dateRange),
-        fetchWeatherData(dateRange),
+        fetchEnergyData(selectedSite, dateRange, { signal: controller.signal }),
+        fetchWeatherData(dateRange, { signal: controller.signal }),
       ])
+
+      // If aborted between fetch and dispatch, bail out
+      if (controller.signal.aborted) return
 
       dispatch({ type: ACTIONS.SET_ENERGY_DATA,  payload: energyRaw })
       dispatch({ type: ACTIONS.SET_WEATHER_DATA, payload: weatherRaw })
 
-      // Merge weather into energy data by matching on date
       const merged = energyRaw.map(day => {
         const weather = weatherRaw.find(w => w.date === day.date) || {}
         return { ...day, ...weather }
       })
 
-      // Run analytics on merged data
       const { processedData, forecast, summary } = processEnergyData(merged)
 
       dispatch({
@@ -41,6 +43,8 @@ export function useEnergyData() {
       })
 
     } catch (err) {
+      if (err.name === 'AbortError') return
+
       const message = err.message.includes('Auth failed')
         ? 'Could not authenticate with HYDRA. Check your credentials in .env'
         : err.message.includes('Data fetch failed')
@@ -49,7 +53,12 @@ export function useEnergyData() {
 
       dispatch({ type: ACTIONS.FETCH_ERROR, payload: message })
     }
-  }
+  }, [selectedSite, dateRange, dispatch])
+
+  useEffect(() => {
+    load()
+    return () => abortRef.current?.abort()
+  }, [load])
 
   return { load }
 }

@@ -1,11 +1,12 @@
 // src/components/chart/ChartLegend.jsx
+import { CHART_COLORS } from '../../utils/constants'
 
 const LEGEND_ITEMS = [
-  { color: '#1d4ed8', label: 'Daily usage (kWh)',    type: 'bar'    },
-  { color: '#dc2626', label: 'Anomaly day',          type: 'dot'    },
-  { color: '#0891b2', label: '7-day moving average', type: 'line'   },
-  { color: '#f97316', label: 'Avg temperature (°C)', type: 'line'   },
-  { color: '#8b5cf6', label: '3-day forecast',       type: 'area'   },
+  { color: CHART_COLORS.energy,      label: 'Daily usage (kWh)',    type: 'bar'    },
+  { color: CHART_COLORS.anomaly,     label: 'Anomaly day',          type: 'dot'    },
+  { color: CHART_COLORS.movingAvg,   label: '7-day moving average', type: 'line'   },
+  { color: CHART_COLORS.temperature, label: 'Avg temperature (°C)', type: 'line'   },
+  { color: CHART_COLORS.forecast,    label: '3-day forecast',       type: 'area'   },
 ]
 
 export default function ChartLegend() {

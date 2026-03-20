@@ -1,24 +1,7 @@
 // src/components/insights/InsightPanel.jsx
 import { useEnergy } from '../../context/EnergyContext'
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-ZA', {
-    weekday: 'long',
-    day:     'numeric',
-    month:   'long',
-    year:    'numeric',
-  })
-}
-
-function formatKwh(kwh) {
-  return kwh.toLocaleString('en-ZA', { maximumFractionDigits: 1 })
-}
-
-function pctAbove(kwh, avg) {
-  return ((kwh - avg) / avg * 100).toFixed(1)
-}
+import { formatDate, formatKwh, pctAbove } from '../../utils/formatters'
+import { SEVERITY_COLORS, TEMP_THRESHOLDS } from '../../utils/constants'
 
 // ─── Weather Context Builder ──────────────────────────────────────────────────
 // Translates raw weather numbers into plain-English phrases
@@ -30,15 +13,15 @@ function buildWeatherContext(day) {
 
   // Temperature narrative
   if (day.tempAvg != null) {
-    if (day.tempAvg >= 35) {
+    if (day.tempAvg >= TEMP_THRESHOLDS.extreme) {
       parts.push(`temperatures were extreme at ${day.tempAvg}°C — well into heatwave territory`)
-    } else if (day.tempAvg >= 28) {
+    } else if (day.tempAvg >= TEMP_THRESHOLDS.veryHot) {
       parts.push(`it was a very hot day at ${day.tempAvg}°C, driving heavy air-conditioning load`)
-    } else if (day.tempAvg >= 22) {
+    } else if (day.tempAvg >= TEMP_THRESHOLDS.warm) {
       parts.push(`temperatures reached ${day.tempAvg}°C, likely increasing cooling demand`)
-    } else if (day.tempAvg >= 15) {
+    } else if (day.tempAvg >= TEMP_THRESHOLDS.mild) {
       parts.push(`mild temperatures of ${day.tempAvg}°C suggest weather wasn't the primary driver`)
-    } else if (day.tempAvg >= 8) {
+    } else if (day.tempAvg >= TEMP_THRESHOLDS.cool) {
       parts.push(`cool temperatures of ${day.tempAvg}°C may have increased heating demand`)
     } else {
       parts.push(`cold conditions at ${day.tempAvg}°C would have significantly raised heating load`)
@@ -64,12 +47,7 @@ function buildWeatherContext(day) {
 // ─── Severity Badge ───────────────────────────────────────────────────────────
 
 function SeverityBadge({ severity }) {
-  const config = {
-    high:   { bg: '#fee2e2', color: '#991b1b', label: 'High severity' },
-    medium: { bg: '#ffedd5', color: '#9a3412', label: 'Medium severity' },
-    low:    { bg: '#fef9c3', color: '#854d0e', label: 'Low severity'  },
-  }
-  const c = config[severity] || config.low
+  const c = SEVERITY_COLORS[severity] || SEVERITY_COLORS.low
 
   return (
     <span style={{
@@ -78,7 +56,7 @@ function SeverityBadge({ severity }) {
       fontSize:     12,
       fontWeight:   600,
       background:   c.bg,
-      color:        c.color,
+      color:        c.text,
     }}>
       {c.label}
     </span>
@@ -90,7 +68,7 @@ function SeverityBadge({ severity }) {
 function InsightCard({ anomaly, rank, avgDailyKwh }) {
   const weatherContext = buildWeatherContext(anomaly)
   const pct            = pctAbove(anomaly.kwh, avgDailyKwh)
-  const isWeatherDriven = anomaly.tempAvg >= 28 || anomaly.tempAvg <= 8
+  const isWeatherDriven = anomaly.tempAvg >= TEMP_THRESHOLDS.veryHot || anomaly.tempAvg <= TEMP_THRESHOLDS.cool
 
   // Build the full plain-English insight sentence
   function buildInsight() {
@@ -210,9 +188,7 @@ function ForecastInsight({ forecast, avgDailyKwh }) {
         {forecast.map(day => (
           <div key={day.date} style={styles.forecastDay}>
             <span style={styles.forecastDate}>
-              {new Date(day.date).toLocaleDateString('en-ZA', {
-                weekday: 'short', day: 'numeric', month: 'short',
-              })}
+              {formatDate(day.date, { weekday: 'short', day: 'numeric', month: 'short', year: undefined })}
             </span>
             <span style={styles.forecastKwh}>
               {formatKwh(day.forecastKwh)} kWh
