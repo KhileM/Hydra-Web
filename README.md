@@ -1,6 +1,6 @@
 ## Live demo
 
-[https://hydra-dashboard.vercel.app](https://hydra-dashboard.vercel.app)
+[https://hydra-web-omega.vercel.app](https://hydra-web-omega.vercel.app/)
 
 ## Setup
 
