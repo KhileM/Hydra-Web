@@ -12,7 +12,7 @@ import {
   ReferenceLine,
   ResponsiveContainer,
 } from 'recharts'
-import { useEnergy }   from '../../context/EnergyContext'
+import { useEnergy }   from '../../context/useEnergy'
 import { CHART_COLORS } from '../../utils/constants'
 import ChartTooltip    from './ChartTooltip'
 import ChartLegend     from './ChartLegend'
@@ -287,17 +287,19 @@ export default function EnergyChart() {
 
 // ─── Loading Skeleton ─────────────────────────────────────────────────────────
 
+const SKELETON_HEIGHTS = Array.from({ length: 20 }, (_, i) => `${30 + ((i * 37 + 13) % 50)}%`)
+
 function ChartSkeleton() {
   return (
     <div style={{ ...styles.wrapper, height: 480 }}>
       <div style={{ ...styles.skeletonTitle, width: 160 }} />
       <div style={styles.skeletonChart}>
-        {[...Array(20)].map((_, i) => (
+        {SKELETON_HEIGHTS.map((height, i) => (
           <div
             key={i}
             style={{
               ...styles.skeletonBar,
-              height: `${30 + Math.random() * 50}%`,
+              height,
             }}
           />
         ))}

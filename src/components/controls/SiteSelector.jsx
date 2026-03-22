@@ -1,5 +1,6 @@
 // src/components/controls/SiteSelector.jsx
-import { useEnergy, ACTIONS } from '../../context/EnergyContext'
+import { useEnergy } from '../../context/useEnergy'
+import { ACTIONS } from '../../context/energyActions'
 
 // ─── Available Sites ──────────────────────────────────────────────────────────
 // The case study only provides one site — add more here as they become available

@@ -1,7 +1,7 @@
 // src/components/controls/Controls.jsx
 import DateRangePicker from './DateRangePicker'
 import SiteSelector    from './SiteSelector'
-import { useEnergy }   from '../../context/EnergyContext'
+import { useEnergy }   from '../../context/useEnergy'
 import { useEnergyData } from '../../hooks/useEnergyData'
 
 export default function Controls() {
