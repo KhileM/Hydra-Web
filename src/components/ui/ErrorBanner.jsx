@@ -1,5 +1,6 @@
 // src/components/ui/ErrorBanner.jsx
-import { useEnergy, ACTIONS } from '../../context/EnergyContext'
+import { useEnergy } from '../../context/useEnergy'
+import { ACTIONS } from '../../context/energyActions'
 
 export default function ErrorBanner() {
   const { state, dispatch } = useEnergy()

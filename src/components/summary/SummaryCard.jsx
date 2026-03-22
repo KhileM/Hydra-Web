@@ -1,5 +1,5 @@
 // src/components/summary/SummaryCard.jsx
-import { useEnergy } from '../../context/EnergyContext'
+import { useEnergy } from '../../context/useEnergy'
 import { formatShortDate } from '../../utils/formatters'
 import { SEVERITY_COLORS } from '../../utils/constants'
 

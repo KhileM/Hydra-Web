@@ -1,6 +1,7 @@
 // src/hooks/useEnergyData.js
 import { useEffect, useCallback, useRef } from 'react'
-import { useEnergy, ACTIONS } from '../context/EnergyContext'
+import { useEnergy } from '../context/useEnergy'
+import { ACTIONS } from '../context/energyActions'
 import { fetchEnergyData } from '../services/hydraService'
 import { fetchWeatherData } from '../services/weatherService'
 import { processEnergyData } from '../utils/analyticsUtils'

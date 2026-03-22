@@ -1,5 +1,5 @@
 // src/components/insights/InsightPanel.jsx
-import { useEnergy } from '../../context/EnergyContext'
+import { useEnergy } from '../../context/useEnergy'
 import { formatDate, formatKwh, pctAbove } from '../../utils/formatters'
 import { SEVERITY_COLORS, TEMP_THRESHOLDS } from '../../utils/constants'
 

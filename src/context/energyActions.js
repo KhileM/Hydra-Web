@@ -1,0 +1,12 @@
+// src/context/energyActions.js
+
+export const ACTIONS = {
+  SET_SITE:           'SET_SITE',
+  SET_DATE_RANGE:     'SET_DATE_RANGE',
+  FETCH_START:        'FETCH_START',
+  FETCH_ERROR:        'FETCH_ERROR',
+  SET_ENERGY_DATA:    'SET_ENERGY_DATA',
+  SET_WEATHER_DATA:   'SET_WEATHER_DATA',
+  SET_PROCESSED_DATA: 'SET_PROCESSED_DATA',
+  CLEAR_ERROR:        'CLEAR_ERROR',
+}

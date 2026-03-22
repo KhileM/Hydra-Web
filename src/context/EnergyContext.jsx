@@ -1,6 +1,8 @@
 // src/context/EnergyContext.jsx
-import { createContext, useContext, useReducer } from 'react'
+import { useReducer } from 'react'
 import { subDays, format } from 'date-fns'
+import { ACTIONS } from './energyActions'
+import { EnergyContext } from './useEnergy'
 
 // ─── Initial State ────────────────────────────────────────────────────────────
 
@@ -35,19 +37,6 @@ const initialState = {
   // UI state
   loading: false,
   error: null,
-}
-
-// ─── Action Types ─────────────────────────────────────────────────────────────
-
-export const ACTIONS = {
-  SET_SITE:           'SET_SITE',
-  SET_DATE_RANGE:     'SET_DATE_RANGE',
-  FETCH_START:        'FETCH_START',
-  FETCH_ERROR:        'FETCH_ERROR',
-  SET_ENERGY_DATA:    'SET_ENERGY_DATA',
-  SET_WEATHER_DATA:   'SET_WEATHER_DATA',
-  SET_PROCESSED_DATA: 'SET_PROCESSED_DATA',
-  CLEAR_ERROR:        'CLEAR_ERROR',
 }
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
@@ -120,8 +109,6 @@ function energyReducer(state, action) {
 
 // ─── Context + Provider ───────────────────────────────────────────────────────
 
-const EnergyContext = createContext(null)
-
 export function EnergyProvider({ children }) {
   const [state, dispatch] = useReducer(energyReducer, initialState)
 
@@ -130,14 +117,4 @@ export function EnergyProvider({ children }) {
       {children}
     </EnergyContext.Provider>
   )
-}
-
-// ─── Custom Hook ──────────────────────────────────────────────────────────────
-
-export function useEnergy() {
-  const context = useContext(EnergyContext)
-  if (!context) {
-    throw new Error('useEnergy must be used inside an EnergyProvider')
-  }
-  return context
 }
