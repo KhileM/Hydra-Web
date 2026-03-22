@@ -35,16 +35,16 @@ weather data to explain spikes and dips in plain English.
 
 ## Tech stack
 
-| Layer       | Choice                                         |
-|-------------|------------------------------------------------|
-| Framework   | React 18 via Vite                              |
-| Charts      | Recharts (ComposedChart)                       |
-| Styling     | Inline styles with CSS-in-JS pattern           |
-| State       | React Context + useReducer                     |
-| Date utils  | date-fns                                       |
+| Layer       | Choice                                                      |
+| ----------- | ----------------------------------------------------------- |
+| Framework   | React 18 via Vite                                           |
+| Charts      | Recharts (ComposedChart)                                    |
+| Styling     | Inline styles with CSS-in-JS pattern                        |
+| State       | React Context + useReducer                                  |
+| Date utils  | date-fns                                                    |
 | Energy API  | HYDRA (identity.hydra.africa + hydra-api.azurewebsites.net) |
-| Weather API | Open-Meteo (free, no API key required)         |
-| Hosting     | Vercel (with serverless functions for CORS proxy) |
+| Weather API | Open-Meteo (free, no API key required)                      |
+| Hosting     | Vercel (with serverless functions for CORS proxy)           |
 
 ---
 
@@ -178,33 +178,31 @@ npm run lint       # Run ESLint
 
 ## Environment variables
 
-| Variable                  | Description                        | Required |
-|---------------------------|------------------------------------|----------|
-| `HYDRA_CLIENT_ID`    | HYDRA OAuth client ID              | Yes      |
-| `HYDRA_CLIENT_SECRET`| HYDRA OAuth client secret          | Yes      |
-| `HYDRA_GRANT_TYPE`   | OAuth grant type (`password`)      | Yes      |
-| `HYDRA_SCOPE`        | OAuth scope (`api1`)               | Yes      |
-| `HYDRA_USERNAME`     | HYDRA account username             | Yes      |
-| `HYDRA_PASSWORD`     | HYDRA account password             | Yes      |
-| `HYDRA_DEVICE_ID`    | Target site device ID              | Yes      |
-| `HYDRA_SENSOR_ID`    | Target site sensor ID              | Yes      |
-| `HYDRA_APP_TITLE`          | App title shown in browser tab     | No       |
-
-All variables prefixed with `VITE_` are available in the browser bundle via
-`import.meta.env`. Variables used only in the serverless functions (`api/`)
-are accessed via `process.env` and are never exposed to the client.
+| Variable              | Description                    | Required |
+| --------------------- | ------------------------------ | -------- |
+| `HYDRA_CLIENT_ID`     | HYDRA OAuth client ID          | Yes      |
+| `HYDRA_CLIENT_SECRET` | HYDRA OAuth client secret      | Yes      |
+| `HYDRA_GRANT_TYPE`    | OAuth grant type (`password`)  | Yes      |
+| `HYDRA_SCOPE`         | OAuth scope (`api1`)           | Yes      |
+| `HYDRA_USERNAME`      | HYDRA account username         | Yes      |
+| `HYDRA_PASSWORD`      | HYDRA account password         | Yes      |
+| `HYDRA_DEVICE_ID`     | Target site device ID          | Yes      |
+| `HYDRA_SENSOR_ID`     | Target site sensor ID          | Yes      |
+| `HYDRA_APP_TITLE`     | App title shown in browser tab | No       |
 
 ---
 
 ## API reference
 
 ### HYDRA Auth
+
 ```
 POST https://identity.hydra.africa/connect/token
 Content-Type: application/x-www-form-urlencoded
 ```
 
 ### HYDRA Energy Data
+
 ```
 POST https://hydra-api.azurewebsites.net/Sensor/exportAggregatedNumbers?binBy=day
 Content-Type: application/json
@@ -212,6 +210,7 @@ Authorization: Bearer <token>
 ```
 
 ### Open-Meteo Weather
+
 ```
 GET https://api.open-meteo.com/v1/forecast
   ?latitude=-33.9249
@@ -243,12 +242,12 @@ or data gap) are filtered out before analysis.
 
 ## Analytics
 
-| Metric           | Method                                                      |
-|------------------|-------------------------------------------------------------|
-| Moving average   | Rolling 7-day mean. Days with fewer than 7 predecessors use available data rather than null-padding |
-| Anomaly detection| Day flagged if kWh exceeds its 7-day moving average. Z-score calculated against full period mean and std dev. Severity: high (z > 2), medium (z > 1), low (z ≤ 1) |
-| Forecast         | Ordinary least squares linear regression over full dataset. Negative predictions clamped to zero |
-| Trend            | First half of period vs second half average, expressed as a percentage change |
+| Metric            | Method                                                                                                                                                            |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Moving average    | Rolling 7-day mean. Days with fewer than 7 predecessors use available data rather than null-padding                                                               |
+| Anomaly detection | Day flagged if kWh exceeds its 7-day moving average. Z-score calculated against full period mean and std dev. Severity: high (z > 2), medium (z > 1), low (z ≤ 1) |
+| Forecast          | Ordinary least squares linear regression over full dataset. Negative predictions clamped to zero                                                                  |
+| Trend             | First half of period vs second half average, expressed as a percentage change                                                                                     |
 
 ---
 
